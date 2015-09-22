@@ -6,6 +6,8 @@ import android.view.*;
 import android.view.View.*;
 import android.widget.*;
 
+// CSC472, Terry Schmidt, Fall 2015
+
 public class calcMainActivity extends Activity {
 
     private boolean userIsTypingNumber = false;
