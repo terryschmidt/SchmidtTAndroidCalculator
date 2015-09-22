@@ -3,16 +3,17 @@ package com.transitiontose.schmidttandroidcalculator;
 import android.app.*;
 import android.os.*;
 import android.view.*;
+import android.view.View.*;
 import android.widget.*;
-import android.view.View.OnClickListener;
-import java.util.*;
 
 public class calcMainActivity extends Activity {
 
+    private boolean userIsTypingNumber = false;
     private TextView scr;
-    private String operation = "";
-    private int firstNum;
+    private int firstNum = 0;
+    private int secondNum = 0;
     private ButtonClickListener btnClick;
+    private int operationPressedCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,62 +32,67 @@ public class calcMainActivity extends Activity {
     }
 
     private class ButtonClickListener implements OnClickListener {
-        public void onClick (View v) {
+        public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.buttonClear: scr.setText("0"); firstNum = 0; operation = ""; break;
-                case R.id.buttonPlus: mMath("+"); break;
-                case R.id.buttonEquals: mResult(); break;
-                default: String num = ((Button) v).getText().toString(); getKeyboard(num); break;
+                case R.id.buttonClear:
+                    clearPressed();
+                    break;
+                case R.id.buttonPlus:
+                    operationPressedCount++;
+                    plusPressed();
+                    break;
+                case R.id.buttonEquals:
+                    equalsPressed();
+                    break;
+                default:
+                    String numPressed = ((Button) v).getText().toString();
+                    String currentDisplay = scr.getText().toString();
+                    if (userIsTypingNumber) {
+                        String newDisplay = currentDisplay + numPressed;
+                        scr.setText(newDisplay);
+                    } else {
+                        scr.setText(numPressed);
+                        userIsTypingNumber = true;
+                    }
             }
         }
     }
 
-    public void mMath (String str) {
-        firstNum = Integer.parseInt(scr.getText().toString());
-        operation = str;
-        scr.setText("0");
+    public void plusPressed () {
+        if (operationPressedCount == 1) {
+            userIsTypingNumber = false;
+            firstNum = Integer.parseInt(scr.getText().toString());
+        } else if (operationPressedCount == 2) {
+            userIsTypingNumber = false;
+            secondNum = Integer.parseInt(scr.getText().toString());
+            equalsPressed();
+        }
     }
 
-    public void mResult () {
-        int secondNum = Integer.parseInt(scr.getText().toString());
-        int result;
-        if (operation.equals("+")) {
-            result = secondNum + firstNum;
+    public void equalsPressed () {
+        int result = 0;
+        if (operationPressedCount == 1) {
+            userIsTypingNumber = false;
+            secondNum = Integer.parseInt(scr.getText().toString());
+            result = firstNum + secondNum;
+            scr.setText(Integer.toString(result));
+            operationPressedCount = 0;
+        } else if (operationPressedCount == 2) {
+            result = firstNum + secondNum;
+            scr.setText(Integer.toString(result));
+            secondNum = result;
+            operationPressedCount = 0;
         } else {
-            result = 000;
+            int temp = 0;
+            temp = secondNum + Integer.parseInt(scr.getText().toString());
+            scr.setText(Integer.toString(temp));
         }
-
-        scr.setText(String.valueOf(result));
     }
 
-    public void getKeyboard(String str) {
-        String scrCurrent = scr.getText().toString();
-        if (scrCurrent.equals("0")) {
-            scrCurrent = "";
-        }
-        scrCurrent += str;
-        scr.setText(scrCurrent);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_calc_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void clearPressed () {
+        userIsTypingNumber = false;
+        scr.setText("0");
+        firstNum = 0;
+        secondNum = 0;
     }
 }
