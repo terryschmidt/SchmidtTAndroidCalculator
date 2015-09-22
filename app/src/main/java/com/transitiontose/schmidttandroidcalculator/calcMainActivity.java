@@ -14,6 +14,7 @@ public class calcMainActivity extends Activity {
     private TextView scr;
     private int firstNum = 0;
     private int secondNum = 0;
+    private int tempNum = 0;
     private ButtonClickListener btnClick;
     private int operationPressedCount = 0;
 
@@ -82,19 +83,22 @@ public class calcMainActivity extends Activity {
         } else if (operationPressedCount == 2) {
             result = firstNum + secondNum;
             scr.setText(Integer.toString(result));
-            secondNum = result;
+            //secondNum = result;
+            tempNum = result;
             operationPressedCount = 0;
         } else {
             int temp = 0;
-            temp = secondNum + Integer.parseInt(scr.getText().toString());
+            temp = tempNum + Integer.parseInt(scr.getText().toString());
             scr.setText(Integer.toString(temp));
         }
     }
 
     public void clearPressed () {
+        operationPressedCount = 0;
         userIsTypingNumber = false;
         scr.setText("0");
         firstNum = 0;
         secondNum = 0;
+        tempNum = 0;
     }
 }
