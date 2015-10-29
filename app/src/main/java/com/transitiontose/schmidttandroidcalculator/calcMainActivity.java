@@ -81,16 +81,21 @@ public class calcMainActivity extends Activity {
             scr.setText(Integer.toString(result));
             operationPressedCount = 0;
         } else if (operationPressedCount == 2) {
+            userIsTypingNumber = false;
             result = firstNum + secondNum;
             scr.setText(Integer.toString(result));
             //secondNum = result;
             tempNum = result;
             operationPressedCount = 0;
         } else {
+            userIsTypingNumber = false;
             int temp = 0;
             temp = tempNum + Integer.parseInt(scr.getText().toString());
             scr.setText(Integer.toString(temp));
         }
+
+        firstNum = 0;
+        secondNum = 0;
     }
 
     public void clearPressed () {
